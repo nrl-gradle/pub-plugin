@@ -23,8 +23,8 @@ hgit{
 }
 
 pluginBundle {
-    website = 'https://geoint.nrlssc.org/'
-    vcsUrl = 'https://github.com/seanrl/nrl-gradle/pub-plugin.git'
+    website = 'https://github.com/nrl-gradle/pub-plugin'
+    vcsUrl = 'https://github.com/nrl-gradle/pub-plugin.git'
     tags = ['publish']
 }
 
