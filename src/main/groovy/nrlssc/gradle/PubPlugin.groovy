@@ -50,7 +50,7 @@ class PubPlugin implements Plugin<Project>{
                         list += "\t" + ip.name + "\n"
                     }
 
-                    println("Successfully published artifacts: \n" + list)
+                    if(list.length() > 0) println("Successfully published artifacts: \n" + list)
                 }
             }
         }
