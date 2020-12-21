@@ -42,7 +42,7 @@ class PubPlugin implements Plugin<Project>{
         }
 
         project.gradle.taskGraph.afterTask { Task task, TaskState state ->
-            if(task.name.startsWith("publish") && task.name != "publish")
+            if(task.name.startsWith("publish") && task.name != "publish" && task.project == project)
             {
                 if (!state.failure) {
                     String list = ""
