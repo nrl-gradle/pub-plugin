@@ -7,6 +7,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.impldep.org.apache.commons.io.IOUtils
 
 import java.nio.charset.StandardCharsets
 
@@ -61,10 +62,12 @@ class PublishYumTask extends DefaultTask {
 
                     httpCon.setDoOutput(true)
                     httpCon.setRequestMethod("PUT")
-                    
-                    OutputStream out = httpCon.getOutputStream()
-                    out.write(f.getBytes())
-                    out.close()
+
+                    try(OutputStream out = httpCon.getOutputStream()) {
+                        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f))) {
+                            IOUtils.copy(bis, out)
+                        }
+                    }
                     httpCon.getInputStream()
                      
                 }
