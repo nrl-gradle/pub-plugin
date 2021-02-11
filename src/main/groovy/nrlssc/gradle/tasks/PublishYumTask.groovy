@@ -63,8 +63,8 @@ class PublishYumTask extends DefaultTask {
                     httpCon.setDoOutput(true)
                     httpCon.setRequestMethod("PUT")
 
-                    try(OutputStream out = httpCon.getOutputStream()) {
-                        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(f))) {
+                    httpCon.getOutputStream().withCloseable {out ->
+                        new BufferedInputStream(new FileInputStream(f)).withCloseable { bis ->
                             IOUtils.copy(bis, out)
                         }
                     }
