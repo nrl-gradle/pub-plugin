@@ -7,6 +7,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.PublishArtifact
+import org.gradle.api.internal.artifacts.dsl.LazyPublishArtifact
 import org.gradle.api.publish.ivy.IvyPublication
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskState
@@ -75,7 +76,7 @@ class PubPlugin implements Plugin<Project>{
                     List<PublishArtifact> handled = new ArrayList<>()
 
                     project.configurations.distributions.artifacts.each{art ->
-                        if(!handled.contains(art)) {
+                        if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
                             artifact(art) {
                                 classifier art.classifier
                             }
@@ -83,7 +84,7 @@ class PubPlugin implements Plugin<Project>{
                         }
                     }
                     project.configurations.archives.artifacts.each{art ->
-                        if(!handled.contains(art)) {
+                        if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
                             artifact(art) {
                                 classifier art.classifier
                             }
@@ -111,7 +112,7 @@ class PubPlugin implements Plugin<Project>{
 
                     List<PublishArtifact> handled = new ArrayList<>()
                     project.configurations.distributions.artifacts.each{art ->
-                        if(!handled.contains(art)) {
+                        if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
                             artifact(art) {
                                 conf DIST_CONFIG
                             }
@@ -120,7 +121,7 @@ class PubPlugin implements Plugin<Project>{
                     }
 
                     project.configurations.archives.artifacts.each{art ->
-                        if(!handled.contains(art)) {
+                        if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
                             artifact art
                             handled.add(art)
                         }
