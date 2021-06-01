@@ -79,6 +79,7 @@ class PubPlugin implements Plugin<Project>{
                             artifact(art) {
                                 classifier art.classifier
                             }
+                            handled.add(art)
                         }
                     }
                     project.configurations.archives.artifacts.each{art ->
