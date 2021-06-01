@@ -70,7 +70,7 @@ class PubPlugin implements Plugin<Project>{
                         i++
                         if(i > 1) {
                             artifact(art) {
-                                classifier art.classifier            
+                                classifier art.classifier
                             }
                         }
                     }
@@ -90,7 +90,11 @@ class PubPlugin implements Plugin<Project>{
                     project.configurations.archives.artifacts.each{art ->
                         i++
                         if(i > 1) {
-                            artifact art
+                            artifact(art){
+                                if(art.classifier.equalsIgnoreCase('app')){
+                                    conf "distribution"
+                                }
+                            }
                         }
                     }
 

@@ -19,7 +19,7 @@ class PubConfig {
     
     List<String> getYumRepoKeys()
     {
-        return yumRepoKeys;
+        return yumRepoKeys
     }
 
     protected List<RepoConfig> getRelRepos(){
