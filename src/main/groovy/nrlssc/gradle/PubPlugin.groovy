@@ -17,7 +17,9 @@ class PubPlugin implements Plugin<Project>{
 
     public static final String PUB_GROUP = 'publishing'
     public static final String YUM_CONFIG = 'yumArchives'
-    
+    public static final String DIST_CONFIG = 'distributions'
+
+
     @Override
     void apply(Project project) {
         project.extensions.create("pub", PubExtension, project)
@@ -54,16 +56,17 @@ class PubPlugin implements Plugin<Project>{
                 }
             }
         }
-        project.configurations{
-            distribution
-        }
+
+        Configuration distConf = proj.configurations.create(DIST_CONFIG)
+        project.configurations.add(distConf)
+
         project.gradle.projectsEvaluated {
             PubExtension ext = project.extensions.getByType(PubExtension)
             try {
                 ext.publishType = project.hgit.isReleaseBranch(project.hgit.fetchBranch()) ? 'release' : 'snapshot'
             }catch(Exception ex){}
             ext.selectRepos()
-            
+
             project.publishing.publications{
                 mavenJava(MavenPublication){
                     from project.components.java
@@ -76,6 +79,12 @@ class PubPlugin implements Plugin<Project>{
                             }
                         }
                     }
+                    project.configurations.distributions.artifacts.each{art ->
+                        artifact(art) {
+                            classifier art.classifier
+                        }
+                    }
+
 
                     versionMapping {
                         usage('java-api') {
@@ -92,12 +101,16 @@ class PubPlugin implements Plugin<Project>{
                     project.configurations.archives.artifacts.each{art ->
                         i++
                         if(i > 1) {
-                            artifact(art){
-                                if(art.classifier.equalsIgnoreCase('app')){
-                                    conf "distribution"
-                                }
-                            }
+                            artifact art
                         }
+                    }
+
+                    project.configurations.distributions.artifacts.each{art ->
+
+                        artifact(art){
+                            conf DIST_CONFIG
+                        }
+
                     }
 
                     versionMapping {
