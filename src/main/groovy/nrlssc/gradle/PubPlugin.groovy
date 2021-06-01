@@ -54,7 +54,9 @@ class PubPlugin implements Plugin<Project>{
                 }
             }
         }
-        
+        project.configurations{
+            distribution
+        }
         project.gradle.projectsEvaluated {
             PubExtension ext = project.extensions.getByType(PubExtension)
             try {
