@@ -57,7 +57,7 @@ class PubPlugin implements Plugin<Project>{
             }
         }
 
-        Configuration distConf = proj.configurations.create(DIST_CONFIG)
+        Configuration distConf = project.configurations.create(DIST_CONFIG)
         project.configurations.add(distConf)
 
         project.gradle.projectsEvaluated {
