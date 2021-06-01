@@ -97,6 +97,11 @@ class PubPlugin implements Plugin<Project>{
                 }
                 ivyJava(IvyPublication){
                     from project.components.java
+
+                    configurations{
+                        distributions{}
+                    }
+
                     int i = 0
                     project.configurations.archives.artifacts.each{art ->
                         i++
@@ -112,6 +117,8 @@ class PubPlugin implements Plugin<Project>{
                         }
 
                     }
+
+
 
                     versionMapping {
                         usage('java-api') {
