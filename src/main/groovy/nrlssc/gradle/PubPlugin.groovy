@@ -6,6 +6,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.PublishArtifact
 import org.gradle.api.publish.ivy.IvyPublication
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskState
@@ -70,20 +71,25 @@ class PubPlugin implements Plugin<Project>{
             project.publishing.publications{
                 mavenJava(MavenPublication){
                     from project.components.java
-                    int i = 0
-                    project.configurations.archives.artifacts.each{art ->
-                        i++
-                        if(i > 1) {
+
+                    List<PublishArtifact> handled = new ArrayList<>()
+
+                    project.configurations.distributions.artifacts.each{art ->
+                        if(!handled.contains(art)) {
                             artifact(art) {
                                 classifier art.classifier
                             }
                         }
                     }
-                    project.configurations.distributions.artifacts.each{art ->
-                        artifact(art) {
-                            classifier art.classifier
+                    project.configurations.archives.artifacts.each{art ->
+                        if(!handled.contains(art)) {
+                            artifact(art) {
+                                classifier art.classifier
+                            }
+                            handled.add(art)
                         }
                     }
+
 
 
                     versionMapping {
@@ -102,23 +108,24 @@ class PubPlugin implements Plugin<Project>{
                         distributions{}
                     }
 
-                    int i = 0
-                    project.configurations.archives.artifacts.each{art ->
-                        i++
-                        if(i > 1) {
-                            artifact art
-                        }
-                    }
-
+                    List<PublishArtifact> handled = new ArrayList<>()
                     project.configurations.distributions.artifacts.each{art ->
-
-                        artifact(art){
-                            conf DIST_CONFIG
+                        if(!handled.contains(art)) {
+                            artifact(art) {
+                                conf DIST_CONFIG
+                            }
+                            handled.add(art)
                         }
-
                     }
 
+                    project.configurations.archives.artifacts.each{art ->
+                        if(!handled.contains(art)) {
+                            artifact art
+                            handled.add(art)
+                        }
 
+
+                    }
 
                     versionMapping {
                         usage('java-api') {
