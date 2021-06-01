@@ -76,19 +76,27 @@ class PubPlugin implements Plugin<Project>{
                     List<PublishArtifact> handled = new ArrayList<>()
 
                     project.configurations.distributions.artifacts.each{art ->
-                        if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
+                        if(!handled.contains(art)) {
                             artifact(art) {
                                 classifier art.classifier
                             }
                             handled.add(art)
                         }
                     }
+
+                    boolean skip = true
                     project.configurations.archives.artifacts.each{art ->
-                        if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
-                            artifact(art) {
-                                classifier art.classifier
+                        if(!skip) {
+                            if (!handled.contains(art)) {
+                                artifact(art) {
+                                    classifier art.classifier
+                                }
+                                handled.add(art)
                             }
-                            handled.add(art)
+                        }
+                        else
+                        {
+                            skip = false
                         }
                     }
 
@@ -120,13 +128,18 @@ class PubPlugin implements Plugin<Project>{
                         }
                     }
 
+                    boolean skip = true
                     project.configurations.archives.artifacts.each{art ->
-                        if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
-                            artifact art
-                            handled.add(art)
+
+                        if(!skip) {
+                            if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
+                                artifact art
+                                handled.add(art)
+                            }
                         }
-
-
+                        else{
+                            skip = false
+                        }
                     }
 
                     versionMapping {
