@@ -120,7 +120,7 @@ class PubPlugin implements Plugin<Project>{
 
                     List<PublishArtifact> handled = new ArrayList<>()
                     project.configurations.distributions.artifacts.each{art ->
-                        if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
+                        if(!handled.contains(art)) {
                             artifact(art) {
                                 conf DIST_CONFIG
                             }
@@ -132,7 +132,7 @@ class PubPlugin implements Plugin<Project>{
                     project.configurations.archives.artifacts.each{art ->
 
                         if(!skip) {
-                            if(!handled.contains(art) && ! art instanceof LazyPublishArtifact) {
+                            if(!handled.contains(art)) {
                                 artifact art
                                 handled.add(art)
                             }
