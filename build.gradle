@@ -9,6 +9,10 @@ plugins{
 sourceCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
+tasks.withType(Copy) {
+    it.duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
 dependencies {
     compileClasspath gradleApi()
     compileClasspath localGroovy()

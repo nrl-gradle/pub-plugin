@@ -55,6 +55,7 @@ class PubExtension {
                         maven{
                             name = "$nam-$key"
                             url = keyURL
+                            allowInsecureProtocol = pbcf.isInsecure()
                             if(pbcf.username != null && pbcf.password != null)
                             {
                                 credentials{
@@ -68,6 +69,7 @@ class PubExtension {
                         ivy{
                             name = "$nam-$key"
                             url = keyURL
+                            allowInsecureProtocol = pbcf.isInsecure()
 
                             if(pbcf.username != null && pbcf.password != null)
                             {

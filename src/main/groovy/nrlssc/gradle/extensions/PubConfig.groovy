@@ -75,6 +75,10 @@ class PubConfig {
         yum(ConfigureUtil.configure(yumClosure, new RepoConfig()))
     }
 
+    boolean isInsecure()
+    {
+        return url.startsWith("http://")
+    }
     //endregion configure repos
     
     
