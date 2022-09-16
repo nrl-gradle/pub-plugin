@@ -35,7 +35,7 @@ gradlePlugin {
         pubPlugin {
             id = 'nrlssc.pub'
             displayName = 'Simplfied Publish Plugin'
-            description = 'Configures boilerplate for Publishing to Artifactory and/or Gitlab'
+            description = 'Configures boilerplate for Publishing to Artifactory and/or Nexus'
             implementationClass = 'nrlssc.gradle.PubPlugin'
         }
     }
