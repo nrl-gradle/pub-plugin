@@ -6,6 +6,7 @@ plugins{
     id 'nrlssc.gradle' version '2.0.58'
 }
 
+
 sourceCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
