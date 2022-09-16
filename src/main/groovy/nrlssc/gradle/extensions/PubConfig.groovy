@@ -11,12 +11,19 @@ class PubConfig {
     String url
     String username
     String password
-    String pattern = "{url}/{key}"
+    String pattern
+
+    static String defaultPattern = "{url}/{key}"
 
     //region configure repos
     private List<RepoConfig> relRepos = new ArrayList<>()
     private List<RepoConfig> snapRepos = new ArrayList<>()
     private List<String> yumRepoKeys = new ArrayList<>()
+
+    PubConfig()
+    {
+        this.pattern = defaultPattern
+    }
     
     List<String> getYumRepoKeys()
     {
