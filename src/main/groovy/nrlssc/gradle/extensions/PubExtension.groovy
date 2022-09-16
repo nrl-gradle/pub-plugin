@@ -26,8 +26,7 @@ class PubExtension {
     {
         pubConfigs.add(pubConfig)
     }
-    
-    List<String> getYumRepoURLs
+
     
     void selectRepos() {
         for(PubConfig pbcf : pubConfigs){
@@ -49,7 +48,7 @@ class PubExtension {
                 {
                     
                     def key = rc.key
-                    def keyURL = String.join("/", pbcf.getUrl(), rc.key)
+                    def keyURL = pbcf.pattern.replace("{url}", pbcf.getUrl()).replace("{key}", rc.getKey())
 
                     if(rc.maven) {
                         maven{

@@ -13,7 +13,7 @@ compileJava.options.encoding = 'UTF-8'
 dependencies {
     api gradleApi()
     implementation localGroovy()
-    api 'mil.navy.nrlssc:gplugin-commons:3.0.13'
+    api 'mil.navy.nrlssc:gplugin-commons:3.0.14'
 
     testImplementation gradleTestKit(),
             'junit:junit:4.12'
@@ -35,7 +35,7 @@ gradlePlugin {
         pubPlugin {
             id = 'nrlssc.pub'
             displayName = 'Simplfied Publish Plugin'
-            description = 'Configures boilerplate for Publishing to Artifactory and/or Nexus'
+            description = 'Configures boilerplate for Publishing to Artifactory and/or Gitlab'
             implementationClass = 'nrlssc.gradle.PubPlugin'
         }
     }

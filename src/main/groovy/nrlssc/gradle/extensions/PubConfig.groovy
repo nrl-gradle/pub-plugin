@@ -11,6 +11,7 @@ class PubConfig {
     String url
     String username
     String password
+    String pattern = "{url}/{key}"
 
     //region configure repos
     private List<RepoConfig> relRepos = new ArrayList<>()
