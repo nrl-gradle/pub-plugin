@@ -48,7 +48,9 @@ class PubExtension {
                 {
                     
                     def key = rc.key
-                    def keyURL = (pbcf.pattern == null ? PubConfig.defaultPattern : pbcf.pattern).replace("{url}", pbcf.getUrl()).replace("{key}", rc.getKey())
+                    def keyURL = pbcf.pattern == null ? PubConfig.defaultPattern : pbcf.pattern
+                    keyURL = keyURL.replace("{url}", pbcf.getUrl())
+                    keyURL = keyURL.replace("{key}", rc.key)
 
                     if(rc.maven) {
                         maven{
