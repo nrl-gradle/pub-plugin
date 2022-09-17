@@ -22,6 +22,7 @@ class PubExtension {
     {
         repo(ConfigureUtil.configure(pubClosure, new PubConfig()))
     }
+
     void repo(PubConfig pubConfig)
     {
         pubConfigs.add(pubConfig)

@@ -1,5 +1,7 @@
 package nrlssc.gradle.extensions
 
+import org.gradle.util.Configurable
+
 
 class RepoConfig {
 
@@ -11,9 +13,9 @@ class RepoConfig {
     String key
     boolean maven = false
     Closure patternLayout = defaultLayout
-    
+
     RepoConfig(){
-        
+
     }
     
     RepoConfig(String key){
@@ -29,4 +31,29 @@ class RepoConfig {
         this.key = key
         this.patternLayout = ivyConf
     }
+
+    String getKey() {
+        return key
+    }
+
+    void setKey(String key) {
+        this.key = key
+    }
+
+    boolean getMaven() {
+        return maven
+    }
+
+    void setMaven(boolean maven) {
+        this.maven = maven
+    }
+
+    Closure getPatternLayout() {
+        return patternLayout
+    }
+
+    void setPatternLayout(Closure patternLayout) {
+        this.patternLayout = patternLayout
+    }
+
 }
