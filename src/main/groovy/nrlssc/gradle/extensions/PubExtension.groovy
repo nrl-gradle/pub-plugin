@@ -30,7 +30,7 @@ class PubExtension {
     
     void selectRepos() {
         for(PubConfig pbcf : pubConfigs){
-            
+
             List<RepoConfig> repoConfigs
             switch (publishType){
                 case 'snapshot':
@@ -40,7 +40,8 @@ class PubExtension {
                     repoConfigs = pbcf.getRelRepos()
                     break
             }
-            
+            def keyURLBase = pbcf.pattern == null ? PubConfig.defaultPattern : pbcf.pattern
+            keyURLBase = keyURLBase.replace("{url}", pbcf.getUrl())
             def nam = pbcf.getName() == null ? "Default" : pbcf.getName()
 
             project.publishing.repositories {
@@ -48,9 +49,8 @@ class PubExtension {
                 {
                     
                     def key = rc.key
-                    def keyURL = pbcf.pattern == null ? PubConfig.defaultPattern : pbcf.pattern
-                    keyURL = keyURL.replace("{url}", pbcf.getUrl())
-                    keyURL = keyURL.replace("{key}", rc.key)
+
+                    def keyURL = keyURLBase.replace("{key}", rc.key)
 
                     if(rc.maven) {
                         maven{
