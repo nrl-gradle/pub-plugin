@@ -58,12 +58,20 @@ class PubExtension {
                             name = "$nam-$key"
                             url = keyURL
                             allowInsecureProtocol = pbcf.isInsecure()
-                            if(pbcf.username != null && pbcf.password != null)
+                            if(pbcf.credentials != null && pbcf.credentialsClass != null)
+                            {
+                                credentials(pbcf.credentialsClass, pbcf.credentials)
+                            }
+                            else if(pbcf.username != null && pbcf.password != null)
                             {
                                 credentials{
                                     username = pbcf.username
                                     password = pbcf.password
                                 }
+                            }
+                            if(pbcf.authentication != null)
+                            {
+                                authentication(pbcf.authentication)
                             }
                         }
                     }
@@ -73,12 +81,20 @@ class PubExtension {
                             url = keyURL
                             allowInsecureProtocol = pbcf.isInsecure()
 
-                            if(pbcf.username != null && pbcf.password != null)
+                            if(pbcf.credentials != null && pbcf.credentialsClass != null)
+                            {
+                                credentials(pbcf.credentialsClass, pbcf.credentials)
+                            }
+                            else if(pbcf.username != null && pbcf.password != null)
                             {
                                 credentials{
                                     username = pbcf.username
                                     password = pbcf.password
                                 }
+                            }
+                            if(pbcf.authentication != null)
+                            {
+                                authentication(pbcf.authentication)
                             }
                             if(rc.patternLayout != null)
                             {

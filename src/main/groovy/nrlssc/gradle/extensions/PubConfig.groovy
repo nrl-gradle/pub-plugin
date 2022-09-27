@@ -1,5 +1,7 @@
 package nrlssc.gradle.extensions
 
+import org.gradle.api.Action
+import org.gradle.api.credentials.Credentials
 import org.gradle.util.ConfigureUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -9,9 +11,12 @@ class PubConfig {
 
     String name
     String url
+    String pattern
     String username
     String password
-    String pattern
+    Class credentialsClass
+    Closure credentials
+    Closure authentication
 
     static String defaultPattern = "{url}/{key}"
 
@@ -86,6 +91,17 @@ class PubConfig {
     boolean isInsecure()
     {
         return url.startsWith("http://")
+    }
+
+    void credentials(Class<? extends Credentials> credentialsClass, Closure credentials)
+    {
+        this.credentialsClass = credentialsClass
+        this.credentials = credentials
+    }
+
+    void authentication(Closure closure)
+    {
+        this.authentication = closure
     }
     //endregion configure repos
     
