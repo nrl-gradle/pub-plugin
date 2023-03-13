@@ -78,7 +78,7 @@ class PubPlugin implements Plugin<Project>{
                     project.configurations.distributions.artifacts.each{art ->
                         if(!handled.contains(art)) {
                             artifact(art) {
-                                archiveClassifier.set(art.archiveClassifier)
+                                classifier art.archiveClassifier
                             }
                             handled.add(art)
                         }
@@ -89,7 +89,7 @@ class PubPlugin implements Plugin<Project>{
                         if(!skip) {
                             if (!handled.contains(art)) {
                                 artifact(art) {
-                                    archiveClassifier.set(art.archiveClassifier)
+                                    classifier art.archiveClassifier
                                 }
                                 handled.add(art)
                             }
