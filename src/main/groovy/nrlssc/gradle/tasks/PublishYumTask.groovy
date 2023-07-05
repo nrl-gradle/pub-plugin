@@ -3,11 +3,11 @@ package nrlssc.gradle.tasks
 import nrlssc.gradle.PubPlugin
 import nrlssc.gradle.extensions.PubConfig
 import nrlssc.gradle.extensions.PubExtension
+import org.apache.commons.io.IOUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.impldep.org.apache.commons.io.IOUtils
 
 import java.nio.charset.StandardCharsets
 
@@ -48,7 +48,8 @@ class PublishYumTask extends DefaultTask {
             {
                 for(File f : getInputFiles()) {
                     URL url = new URL(pubConfig.url + "/" + repoKey + "/" + f.getName())
-                    
+
+
 
                     String auth = pubConfig.username + ":" + pubConfig.password
 
