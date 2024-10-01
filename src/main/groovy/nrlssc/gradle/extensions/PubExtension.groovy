@@ -11,12 +11,14 @@ class PubExtension {
     private Project project
     
     String publishType = 'release' //'release' or 'snapshot'
+
     
     PubExtension(Project proj)
     {
         this.project = proj
     }
-    
+
+
     List<PubConfig> pubConfigs = new ArrayList<>()
     void repo(Closure pubClosure)
     {

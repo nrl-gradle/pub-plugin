@@ -24,6 +24,7 @@ class PubConfig {
     private List<RepoConfig> relRepos = new ArrayList<>()
     private List<RepoConfig> snapRepos = new ArrayList<>()
     private List<String> yumRepoKeys = new ArrayList<>()
+    private List<String> dockerRepoKeys = new ArrayList<>()
 
     PubConfig()
     {
@@ -33,6 +34,11 @@ class PubConfig {
     List<String> getYumRepoKeys()
     {
         return yumRepoKeys
+    }
+
+    List<String> getDockerRepoKeys()
+    {
+        return dockerRepoKeys
     }
 
     protected List<RepoConfig> getRelRepos(){
@@ -86,6 +92,21 @@ class PubConfig {
     void yum(Closure yumClosure)
     {
         yum(ConfigureUtil.configure(yumClosure, new RepoConfig()))
+    }
+
+    void docker(String key)
+    {
+        dockerRepoKeys.add(key)
+    }
+
+    void docker(RepoConfig repoConfig)
+    {
+        dockerRepoKeys.add(repoConfig.key)
+    }
+
+    void docker(Closure dockerClosure)
+    {
+        docker(ConfigureUtil.configure(dockerClosure, new RepoConfig()))
     }
 
     boolean isInsecure()

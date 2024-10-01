@@ -44,22 +44,19 @@ class PublishYumTask extends DefaultTask {
         
         for(PubConfig pubConfig : pubExt.getPubConfigs())
         {
+
             for(String repoKey : pubConfig.getYumRepoKeys())
             {
+                String auth = pubConfig.username + ":" + pubConfig.password
+                String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8))
+                String authHeaderValue = "Basic " + encodedAuth
+
                 for(File f : getInputFiles()) {
                     URL url = new URL(pubConfig.url + "/" + repoKey + "/" + f.getName())
 
-
-
-                    String auth = pubConfig.username + ":" + pubConfig.password
-
-                    byte[] encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.UTF_8))
-                    String authHeaderValue = "Basic " + new String(encodedAuth)
-
-                    HttpURLConnection httpCon = url.openConnection()
+                    HttpURLConnection httpCon = (HttpURLConnection)url.openConnection()
 
                     httpCon.setRequestProperty("Authorization", authHeaderValue)    
-
 
                     httpCon.setDoOutput(true)
                     httpCon.setRequestMethod("PUT")

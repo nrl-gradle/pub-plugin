@@ -1,6 +1,8 @@
 package nrlssc.gradle
 
 import nrlssc.gradle.extensions.PubExtension
+import nrlssc.gradle.helpers.PropertyName
+import nrlssc.gradle.tasks.PublishDockerImageTask
 import nrlssc.gradle.tasks.PublishYumTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -24,12 +26,16 @@ class PubPlugin implements Plugin<Project>{
 
     @Override
     void apply(Project project) {
-        project.extensions.create("pub", PubExtension, project)
+        PubExtension pubEx = project.extensions.create("pub", PubExtension, project)
         project.pluginManager.apply('maven-publish')
         project.pluginManager.apply('ivy-publish')
 
         Configuration yumConfig = project.configurations.create(YUM_CONFIG)
         project.configurations.add(yumConfig)
+
+
+        PublishDockerImageTask pdtask = PublishDockerImageTask.createFor(project)
+        project.tasks.getByName('publish').dependsOn(pdtask)
 
         PublishYumTask ptask = PublishYumTask.createFor(project)
         project.tasks.getByName('publish').dependsOn(ptask)
