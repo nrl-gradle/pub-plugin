@@ -9,7 +9,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.PublishArtifact
-import org.gradle.api.internal.artifacts.dsl.LazyPublishArtifact
 import org.gradle.api.publish.ivy.IvyPublication
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.TaskState
@@ -75,14 +74,23 @@ class PubPlugin implements Plugin<Project>{
             }catch(Exception ex){}
             ext.selectRepos()
 
-            project.publishing.publications{
-                mavenJava(MavenPublication){
-                    from project.components.java
+            def cmp
+            try{
+                cmp = project.components.java
+            }
+            catch (Exception ex){
+                println "Java not found, using default component"
+                cmp = project.components[0]
+            }
+
+            project.publishing.publications {
+                mavenJava(MavenPublication) {
+                    from cmp
 
                     List<PublishArtifact> handled = new ArrayList<>()
 
-                    project.configurations.distributions.artifacts.each{art ->
-                        if(!handled.contains(art)) {
+                    project.configurations.distributions.artifacts.each { art ->
+                        if (!handled.contains(art)) {
                             artifact(art) {
                                 classifier art.classifier
                             }
@@ -91,21 +99,18 @@ class PubPlugin implements Plugin<Project>{
                     }
 
                     boolean skip = true
-                    project.configurations.archives.artifacts.each{art ->
-                        if(!skip) {
+                    project.configurations.archives.artifacts.each { art ->
+                        if (!skip) {
                             if (!handled.contains(art)) {
                                 artifact(art) {
                                     classifier art.classifier
                                 }
                                 handled.add(art)
                             }
-                        }
-                        else
-                        {
+                        } else {
                             skip = false
                         }
                     }
-
 
 
                     versionMapping {
@@ -117,16 +122,16 @@ class PubPlugin implements Plugin<Project>{
                         }
                     }
                 }
-                ivyJava(IvyPublication){
-                    from project.components.java
+                ivyJava(IvyPublication) {
+                    from cmp
 
-                    configurations{
-                        distributions{}
+                    configurations {
+                        distributions {}
                     }
 
                     List<PublishArtifact> handled = new ArrayList<>()
-                    project.configurations.distributions.artifacts.each{art ->
-                        if(!handled.contains(art)) {
+                    project.configurations.distributions.artifacts.each { art ->
+                        if (!handled.contains(art)) {
                             artifact(art) {
                                 conf DIST_CONFIG
                             }
@@ -135,15 +140,14 @@ class PubPlugin implements Plugin<Project>{
                     }
 
                     boolean skip = true
-                    project.configurations.archives.artifacts.each{art ->
+                    project.configurations.archives.artifacts.each { art ->
 
-                        if(!skip) {
-                            if(!handled.contains(art)) {
+                        if (!skip) {
+                            if (!handled.contains(art)) {
                                 artifact art
                                 handled.add(art)
                             }
-                        }
-                        else{
+                        } else {
                             skip = false
                         }
                     }
