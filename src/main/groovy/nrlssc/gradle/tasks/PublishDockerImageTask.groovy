@@ -43,7 +43,7 @@ class PublishDockerImageTask extends DefaultTask{
                 execute("docker login " +
                         "-u ${pubConfig.username} " +
                         "--password-stdin " +
-                        "$repoKey", pubConfig.password, true)
+                        "$repoKey", pubConfig.password, "Bad credentials")
 
                 logger.debug('docker build')
                 execute("docker build . --tag $latestTag --tag $verTag ")
@@ -68,7 +68,7 @@ class PublishDockerImageTask extends DefaultTask{
         }
     }
 
-    String execute(String cmd, String sendToStdin = null, boolean breakOnError = false){
+    String execute(String cmd, String sendToStdin = null, String errorText = null){
         def env = System.getenv().collect { k, v -> "$k=$v" }
 
         Process p = cmd.execute(env, project.projectDir)
@@ -82,7 +82,7 @@ class PublishDockerImageTask extends DefaultTask{
 
         String txt = p.text
 
-        if(breakOnError && b.toString().trim().length() > 0)
+        if(errorText != null && b.toString().trim().length() > 0 && b.toString().contains(errorText))
         {
             throw new RuntimeException('Error in Docker Publish: ' + b)
         }
