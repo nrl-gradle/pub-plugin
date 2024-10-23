@@ -2,6 +2,7 @@ package nrlssc.gradle
 
 import nrlssc.gradle.extensions.PubExtension
 import nrlssc.gradle.helpers.PropertyName
+import nrlssc.gradle.tasks.BuildDockerImageTask
 import nrlssc.gradle.tasks.PublishDockerImageTask
 import nrlssc.gradle.tasks.PublishYumTask
 import org.gradle.api.Plugin
@@ -33,7 +34,9 @@ class PubPlugin implements Plugin<Project>{
         project.configurations.add(yumConfig)
 
 
+        BuildDockerImageTask bdtask = BuildDockerImageTask.createFor(project)
         PublishDockerImageTask pdtask = PublishDockerImageTask.createFor(project)
+        pdtask.dependsOn(bdtask)
         project.tasks.getByName('publish').dependsOn(pdtask)
 
         PublishYumTask ptask = PublishYumTask.createFor(project)

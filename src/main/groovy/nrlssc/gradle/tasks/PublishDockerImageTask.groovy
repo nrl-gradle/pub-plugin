@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets
 /**
  * Created by scraft on 10/01/2024.
  */
-class PublishDockerImageTask extends DefaultTask{
+class PublishDockerImageTask extends DefaultTask implements DockerTask {
 
     static PublishDockerImageTask createFor(Project project)
     {
@@ -45,8 +45,7 @@ class PublishDockerImageTask extends DefaultTask{
                         "--password-stdin " +
                         "$repoKey", pubConfig.password, "Bad credentials")
 
-                logger.debug('docker build')
-                execute("docker build . --tag $latestTag --tag $verTag ")
+
                 logger.debug('docker push ')
                 execute("docker push $verTag")
                 println("Successfully published $verTag to Docker Registry")
@@ -62,24 +61,5 @@ class PublishDockerImageTask extends DefaultTask{
         }
     }
 
-    String execute(String cmd, String sendToStdin = null, String errorText = null){
-        def env = System.getenv().collect { k, v -> "$k=$v" }
 
-        Process p = cmd.execute(env, project.projectDir)
-        if(sendToStdin != null) {
-            sendToStdin = sendToStdin + "\n"
-            p.getOut().write(sendToStdin.getBytes(StandardCharsets.UTF_8))
-            p.getOut().close()
-        }
-        def b = new StringBuffer()
-        p.consumeProcessErrorStream(b)
-
-        String txt = p.text
-
-        if(errorText != null && b.toString().trim().length() > 0 && b.toString().contains(errorText))
-        {
-            throw new RuntimeException('Error in Docker Publish: ' + b)
-        }
-        return txt + b.toString().trim()
-    }
 }
