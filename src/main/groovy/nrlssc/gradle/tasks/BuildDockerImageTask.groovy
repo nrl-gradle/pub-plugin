@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets
 /**
  * Created by scraft on 10/01/2024.
  */
-class BuildDockerImageTask extends DefaultTask implements DockerTask{
+class BuildDockerImageTask extends DockerTask {
 
     static BuildDockerImageTask createFor(Project project)
     {

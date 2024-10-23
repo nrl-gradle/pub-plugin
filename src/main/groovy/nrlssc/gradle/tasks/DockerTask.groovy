@@ -1,11 +1,13 @@
 package nrlssc.gradle.tasks
 
+import org.gradle.api.DefaultTask
+
 import java.nio.charset.StandardCharsets
 
-interface DockerTask {
+abstract class DockerTask extends DefaultTask {
 
 
-    default String execute(String cmd, String sendToStdin = null, String errorText = null){
+    String execute(String cmd, String sendToStdin = null, String errorText = null){
         def env = System.getenv().collect { k, v -> "$k=$v" }
 
         Process p = cmd.execute(env, project.projectDir)

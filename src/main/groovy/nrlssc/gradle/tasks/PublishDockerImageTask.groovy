@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets
 /**
  * Created by scraft on 10/01/2024.
  */
-class PublishDockerImageTask extends DefaultTask implements DockerTask {
+class PublishDockerImageTask extends DockerTask {
 
     static PublishDockerImageTask createFor(Project project)
     {
