@@ -12,6 +12,7 @@ class PubExtension {
     
     String publishType = 'release' //'release' or 'snapshot'
 
+
     
     PubExtension(Project proj)
     {
@@ -109,5 +110,11 @@ class PubExtension {
             
         }
     }
-    
+
+    List<String> extraDockerTagVersions = new ArrayList<>();
+
+    void dockerTagVersion(String versionID){
+        extraDockerTagVersions.add(versionID);
+    }
+
 }

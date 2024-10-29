@@ -35,8 +35,12 @@ class PublishDockerImageTask extends DockerTask {
         {
             for(String repoKey : pubConfig.getDockerRepoKeys())
             {
-                String latestTag = repoKey + '/' + project.group + '/' + project.getName() + ':latest'
-                String verTag = repoKey + '/' + project.group + '/' + project.getName() + ':' + project.getVersion()
+                String tagRoot = repoKey + '/' + project.group + '/' + project.getName() + ':'
+                List<String> tagVers = new ArrayList<>()
+                tagVers.add('latest')
+                tagVers.add(project.getVersion() + '')
+                tagVers.addAll(pubExt.getExtraDockerTagVersions())
+
 
 
                 logger.debug('docker login')
@@ -45,16 +49,14 @@ class PublishDockerImageTask extends DockerTask {
                         "--password-stdin " +
                         "$repoKey", pubConfig.password, "Bad credentials")
 
+                String msg = "Successfully pushed docker images to registry for " + project.getName() + " with tags:\n"
+                for(String tagVer : tagVers) {
+                    logger.debug('docker push ')
+                    execute("docker push $tagRoot$tagVer")
+                    msg += "    $tagRoot$tagVer\n"
+                }
 
-                logger.debug('docker push ')
-                execute("docker push $verTag")
-                println("Successfully published $verTag to Docker Registry")
-
-
-                logger.debug('docker push')
-                execute("docker push $latestTag")
-                println("Successfully published $latestTag to Docker Registry")
-
+                println(msg)
 
             }
 

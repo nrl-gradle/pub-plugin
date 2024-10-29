@@ -33,12 +33,26 @@ class BuildDockerImageTask extends DockerTask {
         {
             for(String repoKey : pubConfig.getDockerRepoKeys())
             {
-                String latestTag = repoKey + '/' + project.group + '/' + project.getName() + ':latest'
-                String verTag = repoKey + '/' + project.group + '/' + project.getName() + ':' + project.getVersion()
+                String tagRoot = repoKey + '/' + project.group + '/' + project.getName() + ':'
+                List<String> tagVers = new ArrayList<>()
+                tagVers.add('latest')
+                tagVers.add(project.getVersion() + '')
+                tagVers.addAll(pubExt.getExtraDockerTagVersions())
+
+
+                String msg = "Successfully built docker image for " + project.getName() + " with tags:\n"
+
+                String cmd = "docker build . "
+                for(String tagVer : tagVers)
+                {
+                    cmd = cmd + "--tag $tagRoot$tagVer "
+                    msg += "    $tagRoot$tagVer\n"
+                }
 
                 logger.debug('docker build')
-                execute("docker build . --tag $latestTag --tag $verTag ")
-                println("Successfully built $verTag ")
+                execute(cmd)
+
+                println(msg)
 
             }
 
