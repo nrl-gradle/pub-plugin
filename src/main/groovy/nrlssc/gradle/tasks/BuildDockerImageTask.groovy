@@ -1,6 +1,7 @@
 package nrlssc.gradle.tasks
 
 import nrlssc.gradle.PubPlugin
+import nrlssc.gradle.extensions.DockerConfig
 import nrlssc.gradle.extensions.PubConfig
 import nrlssc.gradle.extensions.PubExtension
 import org.gradle.api.DefaultTask
@@ -27,32 +28,35 @@ class BuildDockerImageTask extends DockerTask {
     @TaskAction
     void run()
     {
+        logger.info("Building docker images")
         PubExtension pubExt = project.extensions.getByType(PubExtension.class)
+
 
         for(PubConfig pubConfig : pubExt.getPubConfigs())
         {
             for(String repoKey : pubConfig.getDockerRepoKeys())
             {
-                String tagRoot = repoKey + '/' + project.group + '/' + project.getName() + ':'
-                List<String> tagVers = new ArrayList<>()
-                tagVers.add('latest')
-                tagVers.add(project.getVersion() + '')
-                tagVers.addAll(pubExt.getExtraDockerTagVersions())
+                for(DockerConfig cfg : pubExt.getDockerConfigs()) {
+                    String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//) + '/' + project.getName() + ':'
+                    List<String> tagVers = new ArrayList<>()
+                    tagVers.add('latest')
+                    tagVers.add(project.getVersion() + '')
+                    tagVers.addAll(pubExt.getExtraDockerTagVersions())
 
 
-                String msg = "Successfully built docker image for " + project.getName() + " with tags:\n"
+                    String msg = "Successfully built docker image for " + project.getName() + " with tags:\n"
 
-                String cmd = "docker build . "
-                for(String tagVer : tagVers)
-                {
-                    cmd = cmd + "--tag $tagRoot$tagVer "
-                    msg += "    $tagRoot$tagVer\n"
+                    String cmd = "docker build . "
+                    for (String tagVer : tagVers) {
+                        cmd = cmd + "--tag $tagRoot$tagVer "
+                        msg += "    $tagRoot$tagVer\n"
+                    }
+
+                    logger.debug('docker build')
+                    execute(cmd)
+
+                    println(msg)
                 }
-
-                logger.debug('docker build')
-                execute(cmd)
-
-                println(msg)
 
             }
 
