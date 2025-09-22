@@ -29,37 +29,15 @@ class BuildDockerImageTask extends DockerTask {
     void run()
     {
         logger.info("Building docker images")
-        PubExtension pubExt = project.extensions.getByType(PubExtension.class)
+        String msg = "Successfully built docker image for " + project.getName() + " with tags:\n"
+        String cmd = "docker build . "
 
-
-        for(PubConfig pubConfig : pubExt.getPubConfigs())
-        {
-            for(String repoKey : pubConfig.getDockerRepoKeys())
-            {
-                for(DockerConfig cfg : pubExt.getDockerConfigs()) {
-                    String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//) + '/' + project.getName() + ':'
-                    List<String> tagVers = new ArrayList<>()
-                    tagVers.add('latest')
-                    tagVers.add(project.getVersion() + '')
-                    tagVers.addAll(pubExt.getExtraDockerTagVersions())
-
-
-                    String msg = "Successfully built docker image for " + project.getName() + " with tags:\n"
-
-                    String cmd = "docker build . "
-                    for (String tagVer : tagVers) {
-                        cmd = cmd + "--tag $tagRoot$tagVer "
-                        msg += "    $tagRoot$tagVer\n"
-                    }
-
-                    logger.debug('docker build')
-                    execute(cmd)
-
-                    println(msg)
-                }
-
-            }
-
+        for(String tag in getTags()){
+            cmd = cmd + "--tag $tag "
+            msg += "    $tag\n"
         }
+        logger.debug('docker build')
+        execute(cmd)
+        println(msg)
     }
 }

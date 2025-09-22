@@ -3,13 +3,16 @@ package nrlssc.gradle.tasks
 import nrlssc.gradle.extensions.PubConfig
 import nrlssc.gradle.extensions.PubExtension
 import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.Internal
 
 import java.nio.charset.StandardCharsets
 
 abstract class DockerTask extends DefaultTask {
 
+    //TODO finish this multi-use capability
+    @Internal
     List<String> getTags(){
-        List<String> tags = new ArrayList<>();
+        List<String> tags = new ArrayList<>()
 
         PubExtension pubExt = project.extensions.getByType(PubExtension.class)
 
@@ -17,38 +20,20 @@ abstract class DockerTask extends DefaultTask {
         {
             for(String repoKey : pubConfig.getDockerRepoKeys())
             {
-                String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//) + '/' + project.getName() + ':'
+                String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//) + '/' + project.getName()
                 List<String> tagVers = new ArrayList<>()
-                tagVers.add('latest')
-                tagVers.add(project.getVersion() + '')
-                tagVers.addAll(pubExt.getExtraDockerTagVersions())
-
-
-
-                if(pubConfig.username == null || pubConfig.username.length() == 0 ||
-                        pubConfig.password == null || pubConfig.password.length() == 0){
-                    logger.error("Cannot push to docker registry (" + repoKey + ") without valid credentials")
-                    return
+                tags.add("$tagRoot:latest")
+                tags.add("$tagRoot:${project.getVersion()}")
+                if(pubExt.getExtraDockerTagVersions() != null){
+                    for(String extra : pubExt.getExtraDockerTagVersions()){
+                        tags.add("$tagRoot:$extra")
+                    }
                 }
-
-                logger.debug('docker login')
-                execute("docker login " +
-                        "-u ${pubConfig.username} " +
-                        "--password-stdin " +
-                        "$repoKey", pubConfig.password, "Bad credentials")
-
-                String msg = "Successfully pushed docker images to registry for " + project.getName() + " with tags:\n"
-                for(String tagVer : tagVers) {
-                    logger.debug('docker push ')
-                    execute("docker push $tagRoot$tagVer")
-                    msg += "    $tagRoot$tagVer\n"
-                }
-
-                println(msg)
-
             }
 
         }
+
+        return tags
     }
 
     String execute(String cmd, String sendToStdin = null, String errorText = null){
