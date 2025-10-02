@@ -37,7 +37,7 @@ class PubPlugin implements Plugin<Project>{
         BuildDockerImageTask bdtask = BuildDockerImageTask.createFor(project)
         PublishDockerImageTask pdtask = PublishDockerImageTask.createFor(project)
         pdtask.dependsOn(bdtask)
-        project.tasks.getByName('publish').dependsOn(pdtask)
+
 
         PublishYumTask ptask = PublishYumTask.createFor(project)
         project.tasks.getByName('publish').dependsOn(ptask)
@@ -71,6 +71,11 @@ class PubPlugin implements Plugin<Project>{
         project.configurations.add(distConf)
 
         project.gradle.projectsEvaluated {
+            if(!bdtask.getTags().isEmpty())
+            {
+                project.tasks.getByName('publish').dependsOn(pdtask)
+            }
+
             PubExtension ext = project.extensions.getByType(PubExtension)
             try {
                 ext.publishType = project.hgit.isReleaseBranch(project.hgit.fetchBranch()) ? 'release' : 'snapshot'
