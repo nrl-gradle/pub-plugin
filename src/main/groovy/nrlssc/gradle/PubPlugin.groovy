@@ -67,7 +67,6 @@ class PubPlugin implements Plugin<Project>{
         }
 
         Configuration distConf = project.configurations.create(DIST_CONFIG)
-        project.configurations.add(distConf)
 
         project.gradle.projectsEvaluated {
             if(!bdtask.getTags().isEmpty())
