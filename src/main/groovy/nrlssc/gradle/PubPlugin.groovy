@@ -31,7 +31,6 @@ class PubPlugin implements Plugin<Project>{
         project.pluginManager.apply('ivy-publish')
 
         Configuration yumConfig = project.configurations.create(YUM_CONFIG)
-        project.configurations.add(yumConfig)
 
 
         BuildDockerImageTask bdtask = BuildDockerImageTask.createFor(project)
