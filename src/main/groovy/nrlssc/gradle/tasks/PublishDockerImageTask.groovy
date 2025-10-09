@@ -52,7 +52,7 @@ class PublishDockerImageTask extends DockerTask {
                 String msg = "Successfully pushed docker images to registry for " + project.getName() + " with tags:\n"
                 for(String tagVer : tagVers) {
                     logger.debug('docker push ')
-                    execute("docker push $tagRoot$tagVer")
+                    execute("docker push $tagRoot$tagVer", null, "Error response from daemon")
                     msg += "    $tagRoot$tagVer\n"
                 }
 

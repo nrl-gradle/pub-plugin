@@ -32,12 +32,26 @@ class BuildDockerImageTask extends DockerTask {
         String msg = "Successfully built docker image for " + project.getName() + " with tags:\n"
         String cmd = "docker build . "
 
+
+
         for(String tag in getTags()){
             cmd = cmd + "--tag $tag "
             msg += "    $tag\n"
         }
+        PubExtension pubExt = project.extensions.getByType(PubExtension.class)
+
+        for(PubConfig pubConfig : pubExt.getPubConfigs())
+        {
+            for(String repoKey : pubConfig.getDockerRepoKeys()) {
+                execute("docker login " +
+                        "-u ${pubConfig.username} " +
+                        "--password-stdin " +
+                        "$repoKey", pubConfig.password, "Bad credentials")
+            }
+        }
+
         logger.debug('docker build')
-        execute(cmd)
+        execute(cmd, null, "ERROR:")
         println(msg)
     }
 }
