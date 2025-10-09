@@ -2,7 +2,7 @@ package nrlssc.gradle.extensions
 
 import org.gradle.api.Action
 import org.gradle.api.credentials.Credentials
-import org.gradle.util.ConfigureUtil
+import org.gradle.util.internal.ConfigureUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -125,7 +125,7 @@ class PubConfig {
         this.authentication = closure
     }
     //endregion configure repos
-    
-    
-   
+
+
+
 }
