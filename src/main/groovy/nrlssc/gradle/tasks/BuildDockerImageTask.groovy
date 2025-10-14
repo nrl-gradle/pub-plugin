@@ -40,9 +40,12 @@ class BuildDockerImageTask extends DockerTask {
         }
         PubExtension pubExt = project.extensions.getByType(PubExtension.class)
 
+        boolean doRun = false
+
         for(PubConfig pubConfig : pubExt.getPubConfigs())
         {
             for(String repoKey : pubConfig.getDockerRepoKeys()) {
+                doRun = true
                 execute("docker login " +
                         "-u ${pubConfig.username} " +
                         "--password-stdin " +
@@ -50,8 +53,13 @@ class BuildDockerImageTask extends DockerTask {
             }
         }
 
-        logger.debug('docker build')
-        execute(cmd, null, "ERROR:")
-        println(msg)
+        if(!doRun){
+            logger.info("Skipping docker build")
+        }
+        else {
+            logger.debug('docker build')
+            execute(cmd, null, "ERROR:")
+            println(msg)
+        }
     }
 }
