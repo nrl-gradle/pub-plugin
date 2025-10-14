@@ -50,10 +50,12 @@ abstract class DockerTask extends DefaultTask {
 
         String txt = p.text
 
-        if(p.exitValue() != 0 || (errorText != null && b.toString().trim().length() > 0 && b.toString().contains(errorText)))
+
+
+        if(p.waitFor() != 0 || (errorText != null && b.toString().trim().length() > 0 && b.toString().contains(errorText)))
         {
             throw new RuntimeException('Error in docker command execution: ' + b)
         }
-        return txt + b.toString().trim()
+        return txt
     }
 }
