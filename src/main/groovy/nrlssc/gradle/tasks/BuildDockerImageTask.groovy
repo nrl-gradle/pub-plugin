@@ -26,11 +26,10 @@ class BuildDockerImageTask extends DockerTask {
 
 
     @TaskAction
-    void run()
-    {
+    void run()    {
         logger.info("Building docker images")
         String msg = "Successfully built docker image for " + project.getName() + " with tags:\n"
-        String cmd = "docker build . "
+        String cmd = "docker build "
 
 
 
@@ -58,6 +57,7 @@ class BuildDockerImageTask extends DockerTask {
         }
         else {
             logger.debug('docker build')
+            cmd += " ."
             execute(cmd, null, "ERROR:")
             println(msg)
         }
