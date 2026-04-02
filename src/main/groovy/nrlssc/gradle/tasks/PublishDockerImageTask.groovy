@@ -43,11 +43,8 @@ class PublishDockerImageTask extends DockerTask {
                     return
                 }
 
-                logger.debug('docker login')
-                execute("docker login " +
-                        "-u ${pubConfig.username} " +
-                        "--password-stdin " +
-                        "$repoKey", pubConfig.password, "Bad credentials")
+                dockerLogin(pubConfig.username, pubConfig.password, repoKey)
+
 
                 String msg = "Successfully pushed docker images to registry for " + project.getName() + " with tags:\n"
                 for(String tagVer : tagVers) {

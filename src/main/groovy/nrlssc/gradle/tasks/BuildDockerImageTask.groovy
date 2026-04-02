@@ -45,10 +45,7 @@ class BuildDockerImageTask extends DockerTask {
         {
             for(String repoKey : pubConfig.getDockerRepoKeys()) {
                 doRun = true
-                execute("docker login " +
-                        "-u ${pubConfig.username} " +
-                        "--password-stdin " +
-                        "$repoKey", pubConfig.password, "Bad credentials")
+                dockerLogin(pubConfig.username, pubConfig.password, repoKey)
             }
         }
 

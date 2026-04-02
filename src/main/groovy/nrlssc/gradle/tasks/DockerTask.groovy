@@ -58,4 +58,12 @@ abstract class DockerTask extends DefaultTask {
         }
         return txt
     }
+
+    String dockerLogin(String user, String pass, String reg){
+        logger.debug('docker login')
+        return execute("docker login " +
+                "-u ${user} " +
+                "-p ${pass}" +
+                "$reg", null,"Bad credentials")
+    }
 }
