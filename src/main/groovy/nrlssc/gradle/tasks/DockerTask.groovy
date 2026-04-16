@@ -2,6 +2,7 @@ package nrlssc.gradle.tasks
 
 import nrlssc.gradle.extensions.PubConfig
 import nrlssc.gradle.extensions.PubExtension
+import nrlssc.gradle.extensions.RepoConfig
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Internal
 
@@ -18,8 +19,9 @@ abstract class DockerTask extends DefaultTask {
 
         for(PubConfig pubConfig : pubExt.getPubConfigs())
         {
-            for(String repoKey : pubConfig.getDockerRepoKeys())
+            for(RepoConfig repoConfig : pubConfig.getDockerRepos())
             {
+                String repoKey = repoConfig.key
                 String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//) + '/' + project.getName()
                 List<String> tagVers = new ArrayList<>()
                 tags.add("$tagRoot:latest")

@@ -1,6 +1,5 @@
 package nrlssc.gradle.extensions
 
-import org.gradle.util.Configurable
 
 
 class RepoConfig {
@@ -13,6 +12,7 @@ class RepoConfig {
     String key
     boolean maven = false
     Closure patternLayout = defaultLayout
+    boolean publish = true
 
     RepoConfig(){
 
@@ -46,6 +46,14 @@ class RepoConfig {
 
     void setMaven(boolean maven) {
         this.maven = maven
+    }
+
+    boolean getPublish() {
+        return publish
+    }
+
+    void setPublish(boolean publish) {
+        this.publish = publish
     }
 
     Closure getPatternLayout() {

@@ -1,14 +1,12 @@
 package nrlssc.gradle.tasks
 
 import nrlssc.gradle.PubPlugin
-import nrlssc.gradle.extensions.DockerConfig
 import nrlssc.gradle.extensions.PubConfig
 import nrlssc.gradle.extensions.PubExtension
-import org.gradle.api.DefaultTask
+import nrlssc.gradle.extensions.RepoConfig
 import org.gradle.api.Project
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
-
-import java.nio.charset.StandardCharsets
 
 /**
  * Created by scraft on 10/01/2024.
@@ -23,6 +21,20 @@ class BuildDockerImageTask extends DockerTask {
 
         return task
     }
+
+    @Input
+    String contextPath = "."
+    @Input
+    String dockerfile = null
+
+    void contextPath(String path){
+        this.contextPath = path
+    }
+
+    void dockerfile(String fileName){
+        this.dockerfile = fileName
+    }
+
 
 
     @TaskAction
@@ -39,17 +51,31 @@ class BuildDockerImageTask extends DockerTask {
         }
         PubExtension pubExt = project.extensions.getByType(PubExtension.class)
 
+        boolean doRun = false
+
         for(PubConfig pubConfig : pubExt.getPubConfigs())
         {
-            for(String repoKey : pubConfig.getDockerRepoKeys()) {
+            for(RepoConfig repoConfig : pubConfig.getDockerRepos()) {
+                String repoKey = repoConfig.key
+                doRun = true
                 dockerLogin(pubConfig.username, pubConfig.password, repoKey)
             }
         }
 
-        logger.debug('docker build')
-        cmd += " ."
-        execute(cmd, null, "ERROR:")
-        println(msg)
 
+
+        if(!doRun){
+            logger.info("Skipping docker build")
+        }
+        else {
+            logger.debug('docker build')
+            if(dockerfile != null){
+                cmd += " -f $dockerfile"
+            }
+            cmd += " " + contextPath
+
+            execute(cmd, null, "ERROR:")
+            println(msg)
+        }
     }
 }

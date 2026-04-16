@@ -116,15 +116,4 @@ class PubExtension {
         extraDockerTagVersions.add(versionID);
     }
 
-    List<DockerConfig> dockerConfigs = new ArrayList<>();
-    void docker(Closure dockerClosure)
-    {
-        docker(ConfigureUtil.configure(dockerClosure, new DockerConfig()))
-    }
-
-    void docker(DockerConfig cfg)
-    {
-        dockerConfigs.add(cfg);
-    }
-
 }

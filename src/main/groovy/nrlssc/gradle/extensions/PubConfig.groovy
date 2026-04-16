@@ -1,6 +1,6 @@
 package nrlssc.gradle.extensions
 
-import org.gradle.api.Action
+
 import org.gradle.api.credentials.Credentials
 import org.gradle.util.internal.ConfigureUtil
 import org.slf4j.Logger
@@ -24,7 +24,7 @@ class PubConfig {
     private List<RepoConfig> relRepos = new ArrayList<>()
     private List<RepoConfig> snapRepos = new ArrayList<>()
     private List<String> yumRepoKeys = new ArrayList<>()
-    private List<String> dockerRepoKeys = new ArrayList<>()
+    private List<RepoConfig> dockerRepos = new ArrayList<>()
 
     PubConfig()
     {
@@ -36,9 +36,9 @@ class PubConfig {
         return yumRepoKeys
     }
 
-    List<String> getDockerRepoKeys()
+    List<RepoConfig> getDockerRepos()
     {
-        return dockerRepoKeys
+        return dockerRepos
     }
 
     protected List<RepoConfig> getRelRepos(){
@@ -96,12 +96,14 @@ class PubConfig {
 
     void docker(String key)
     {
-        dockerRepoKeys.add(key)
+        RepoConfig rc = new RepoConfig()
+        rc.key = key
+        dockerRepos.add(rc)
     }
 
     void docker(RepoConfig repoConfig)
     {
-        dockerRepoKeys.add(repoConfig.key)
+        dockerRepos.add(repoConfig)
     }
 
     void docker(Closure dockerClosure)

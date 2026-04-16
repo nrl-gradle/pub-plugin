@@ -3,6 +3,7 @@ package nrlssc.gradle.tasks
 import nrlssc.gradle.PubPlugin
 import nrlssc.gradle.extensions.PubConfig
 import nrlssc.gradle.extensions.PubExtension
+import nrlssc.gradle.extensions.RepoConfig
 import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 
@@ -29,8 +30,9 @@ class PublishDockerImageTask extends DockerTask {
 
         for(PubConfig pubConfig : pubExt.getPubConfigs())
         {
-            for(String repoKey : pubConfig.getDockerRepoKeys())
+            for(RepoConfig repoConfig : pubConfig.getDockerRepos())
             {
+                String repoKey = repoConfig.key
                 String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//) + '/' + project.getName() + ':'
                 List<String> tagVers = new ArrayList<>()
                 tagVers.add('latest')
@@ -40,6 +42,12 @@ class PublishDockerImageTask extends DockerTask {
                 if(pubConfig.username == null || pubConfig.username.length() == 0 ||
                 pubConfig.password == null || pubConfig.password.length() == 0){
                     logger.error("Cannot push to docker registry (" + repoKey + ") without valid credentials")
+                    return
+                }
+
+                if(!repoConfig.publish)
+                {
+                    logger.info("Not publishing to registry $repoKey due to project configuration no-publish")
                     return
                 }
 
