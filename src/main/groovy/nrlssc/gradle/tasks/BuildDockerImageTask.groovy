@@ -6,6 +6,7 @@ import nrlssc.gradle.extensions.PubExtension
 import nrlssc.gradle.extensions.RepoConfig
 import org.gradle.api.Project
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -25,6 +26,7 @@ class BuildDockerImageTask extends DockerTask {
     @Input
     String contextPath = "."
     @Input
+    @Optional
     String dockerfile = null
 
     void contextPath(String path){
