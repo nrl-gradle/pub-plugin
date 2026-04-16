@@ -39,24 +39,17 @@ class BuildDockerImageTask extends DockerTask {
         }
         PubExtension pubExt = project.extensions.getByType(PubExtension.class)
 
-        boolean doRun = false
-
         for(PubConfig pubConfig : pubExt.getPubConfigs())
         {
             for(String repoKey : pubConfig.getDockerRepoKeys()) {
-                doRun = true
                 dockerLogin(pubConfig.username, pubConfig.password, repoKey)
             }
         }
 
-        if(!doRun){
-            logger.info("Skipping docker build")
-        }
-        else {
-            logger.debug('docker build')
-            cmd += " ."
-            execute(cmd, null, "ERROR:")
-            println(msg)
-        }
+        logger.debug('docker build')
+        cmd += " ."
+        execute(cmd, null, "ERROR:")
+        println(msg)
+
     }
 }
