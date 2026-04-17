@@ -8,6 +8,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.TaskState
 
 /**
  * Created by scraft on 10/01/2024.
@@ -19,6 +20,15 @@ class BuildDockerImageTask extends DockerTask {
         BuildDockerImageTask task = project.tasks.create("buildDockerImage", BuildDockerImageTask.class)
         task.group = PubPlugin.PUB_GROUP
         task.description = 'Creates a Docker Image and tags it, using local docker commands (must be on PATH)'
+
+        task.onlyIf {
+            String df = 'Dockerfile'
+            if(task.dockerfile != null){
+                df = task.dockerfile
+            }
+            File dfile = project.file(task.contextPath + '/' + df)
+            dfile.exists()
+        }
 
         return task
     }
@@ -41,6 +51,7 @@ class BuildDockerImageTask extends DockerTask {
 
     @TaskAction
     void run()    {
+
         logger.info("Building docker images")
         String msg = "Successfully built docker image for " + project.getName() + " with tags:\n"
         String cmd = "docker build "
@@ -68,6 +79,7 @@ class BuildDockerImageTask extends DockerTask {
 
         if(!doRun){
             logger.info("Skipping docker build")
+            this.didWork = false
         }
         else {
             logger.debug('docker build')
@@ -78,6 +90,7 @@ class BuildDockerImageTask extends DockerTask {
 
             execute(cmd, null, "ERROR:")
             println(msg)
+            this.didWork = true
         }
     }
 }

@@ -34,8 +34,7 @@ class PubPlugin implements Plugin<Project>{
 
 
         BuildDockerImageTask bdtask = BuildDockerImageTask.createFor(project)
-        PublishDockerImageTask pdtask = PublishDockerImageTask.createFor(project)
-        pdtask.dependsOn(bdtask)
+        PublishDockerImageTask pdtask = PublishDockerImageTask.createFor(project, bdtask)
 
 
         PublishYumTask ptask = PublishYumTask.createFor(project)

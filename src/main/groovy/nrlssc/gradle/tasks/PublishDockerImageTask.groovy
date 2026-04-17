@@ -13,11 +13,13 @@ import org.gradle.api.tasks.TaskAction
  */
 class PublishDockerImageTask extends DockerTask {
 
-    static PublishDockerImageTask createFor(Project project)
+    static PublishDockerImageTask createFor(Project project, BuildDockerImageTask buildTask)
     {
         PublishDockerImageTask task = project.tasks.create("publishDockerImage", PublishDockerImageTask.class)
         task.group = PubPlugin.PUB_GROUP
         task.description = 'Creates a Docker Image and publishes it, using local docker commands (must be on PATH)'
+        task.dependsOn buildTask
+        task.onlyIf { buildTask.didWork }
 
         return task
     }
@@ -47,7 +49,7 @@ class PublishDockerImageTask extends DockerTask {
 
                 if(!repoConfig.publish)
                 {
-                    logger.info("Not publishing to registry $repoKey due to project configuration no-publish")
+                    println("Not publishing to registry $repoKey due to project configuration no-publish")
                     return
                 }
 
