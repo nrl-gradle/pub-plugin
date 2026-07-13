@@ -70,6 +70,7 @@ class PubPlugin implements Plugin<Project>{
         Configuration distConf = project.configurations.create(DIST_CONFIG)
 
         project.gradle.projectsEvaluated {
+
             PubExtension ext = project.extensions.getByType(PubExtension)
 
             if(!bdtask.getTags().isEmpty())
@@ -107,35 +108,35 @@ class PubPlugin implements Plugin<Project>{
             }
 
             project.publishing.publications {
-                mavenJava(MavenPublication) {
+                mavenJavaPub(MavenPublication) {
                     from cmp
 
                     List<PublishArtifact> handled = new ArrayList<>()
 
-                    if (System.getProperty('BUILDINFO_PROPFILE') == null) {
-                        project.configurations.distributions.artifacts.each { art ->
+
+                    project.configurations.distributions.artifacts.each { art ->
+                        if (!handled.contains(art)) {
+                            artifact(art) {
+                                classifier = art.classifier
+                            }
+                            handled.add(art)
+                        }
+                    }
+
+                    boolean skip = true
+                    project.configurations.archives.artifacts.each { art ->
+                        if (!skip) {
                             if (!handled.contains(art)) {
                                 artifact(art) {
                                     classifier = art.classifier
                                 }
                                 handled.add(art)
                             }
-                        }
-
-                        boolean skip = true
-                        project.configurations.archives.artifacts.each { art ->
-                            if (!skip) {
-                                if (!handled.contains(art)) {
-                                    artifact(art) {
-                                        classifier = art.classifier
-                                    }
-                                    handled.add(art)
-                                }
-                            } else {
-                                skip = false
-                            }
+                        } else {
+                            skip = false
                         }
                     }
+
 
                     versionMapping {
                         usage('java-api') {
@@ -146,7 +147,7 @@ class PubPlugin implements Plugin<Project>{
                         }
                     }
                 }
-                ivyJava(IvyPublication) {
+                ivyJavaPub(IvyPublication) {
                     from cmp
 
                     configurations {
@@ -155,29 +156,29 @@ class PubPlugin implements Plugin<Project>{
 
                     List<PublishArtifact> handled = new ArrayList<>()
 
-                    if (System.getProperty('BUILDINFO_PROPFILE') == null) {
-                        project.configurations.distributions.artifacts.each { art ->
-                            if (!handled.contains(art)) {
-                                artifact(art) {
-                                    conf DIST_CONFIG
-                                }
-                                handled.add(art)
-                            }
-                        }
 
-                        boolean skip = true
-                        project.configurations.archives.artifacts.each { art ->
-
-                            if (!skip) {
-                                if (!handled.contains(art)) {
-                                    artifact art
-                                    handled.add(art)
-                                }
-                            } else {
-                                skip = false
+                    project.configurations.distributions.artifacts.each { art ->
+                        if (!handled.contains(art)) {
+                            artifact(art) {
+                                conf DIST_CONFIG
                             }
+                            handled.add(art)
                         }
                     }
+
+                    boolean skip = true
+                    project.configurations.archives.artifacts.each { art ->
+
+                        if (!skip) {
+                            if (!handled.contains(art)) {
+                                artifact art
+                                handled.add(art)
+                            }
+                        } else {
+                            skip = false
+                        }
+                    }
+
 
                     versionMapping {
                         usage('java-api') {
