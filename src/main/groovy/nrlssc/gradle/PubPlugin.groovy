@@ -1,6 +1,8 @@
 package nrlssc.gradle
 
+import nrlssc.gradle.extensions.PubConfig
 import nrlssc.gradle.extensions.PubExtension
+import nrlssc.gradle.extensions.RepoConfig
 import nrlssc.gradle.helpers.PropertyName
 import nrlssc.gradle.tasks.BuildDockerImageTask
 import nrlssc.gradle.tasks.PublishDockerImageTask
@@ -68,12 +70,28 @@ class PubPlugin implements Plugin<Project>{
         Configuration distConf = project.configurations.create(DIST_CONFIG)
 
         project.gradle.projectsEvaluated {
+            PubExtension ext = project.extensions.getByType(PubExtension)
+
             if(!bdtask.getTags().isEmpty())
             {
-                project.tasks.getByName('publish').dependsOn(pdtask)
+                boolean skipDocker = true
+                for(PubConfig pc : ext.getPubConfigs())
+                {
+                    for(RepoConfig rc : pc.getDockerRepos()){
+                        if(rc.publish){
+                            skipDocker = false
+                            break
+                        }
+                    }
+                    if(!skipDocker){
+                        break
+                    }
+                }
+                if(!skipDocker) {
+                    project.tasks.getByName('publish').dependsOn(pdtask)
+                }
             }
 
-            PubExtension ext = project.extensions.getByType(PubExtension)
             try {
                 ext.publishType = project.hgit.isReleaseBranch(project.hgit.fetchBranch()) ? 'release' : 'snapshot'
             }catch(Exception ex){}
@@ -94,29 +112,30 @@ class PubPlugin implements Plugin<Project>{
 
                     List<PublishArtifact> handled = new ArrayList<>()
 
-                    project.configurations.distributions.artifacts.each { art ->
-                        if (!handled.contains(art)) {
-                            artifact(art) {
-                                classifier = art.classifier
-                            }
-                            handled.add(art)
-                        }
-                    }
-
-                    boolean skip = true
-                    project.configurations.archives.artifacts.each { art ->
-                        if (!skip) {
+                    if (System.getProperty('BUILDINFO_PROPFILE') == null) {
+                        project.configurations.distributions.artifacts.each { art ->
                             if (!handled.contains(art)) {
                                 artifact(art) {
                                     classifier = art.classifier
                                 }
                                 handled.add(art)
                             }
-                        } else {
-                            skip = false
+                        }
+
+                        boolean skip = true
+                        project.configurations.archives.artifacts.each { art ->
+                            if (!skip) {
+                                if (!handled.contains(art)) {
+                                    artifact(art) {
+                                        classifier = art.classifier
+                                    }
+                                    handled.add(art)
+                                }
+                            } else {
+                                skip = false
+                            }
                         }
                     }
-
 
                     versionMapping {
                         usage('java-api') {
@@ -135,25 +154,28 @@ class PubPlugin implements Plugin<Project>{
                     }
 
                     List<PublishArtifact> handled = new ArrayList<>()
-                    project.configurations.distributions.artifacts.each { art ->
-                        if (!handled.contains(art)) {
-                            artifact(art) {
-                                conf DIST_CONFIG
-                            }
-                            handled.add(art)
-                        }
-                    }
 
-                    boolean skip = true
-                    project.configurations.archives.artifacts.each { art ->
-
-                        if (!skip) {
+                    if (System.getProperty('BUILDINFO_PROPFILE') == null) {
+                        project.configurations.distributions.artifacts.each { art ->
                             if (!handled.contains(art)) {
-                                artifact art
+                                artifact(art) {
+                                    conf DIST_CONFIG
+                                }
                                 handled.add(art)
                             }
-                        } else {
-                            skip = false
+                        }
+
+                        boolean skip = true
+                        project.configurations.archives.artifacts.each { art ->
+
+                            if (!skip) {
+                                if (!handled.contains(art)) {
+                                    artifact art
+                                    handled.add(art)
+                                }
+                            } else {
+                                skip = false
+                            }
                         }
                     }
 
