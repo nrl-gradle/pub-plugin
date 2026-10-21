@@ -71,7 +71,11 @@ class BuildDockerImageTask extends DockerTask {
             for(RepoConfig repoConfig : pubConfig.getDockerRepos()) {
                 String repoKey = repoConfig.key
                 doRun = true
-                dockerLogin(pubConfig.username, pubConfig.password, repoKey)
+                try {
+                    dockerLogin(pubConfig.username, pubConfig.password, repoKey)
+                }catch (Exception ex){
+                    logger.warn("Failed to docker login: '" + repoKey + "'.  Base Images from this repo will fail to pull.");
+                }
             }
         }
 
