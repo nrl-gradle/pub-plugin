@@ -22,7 +22,7 @@ abstract class DockerTask extends DefaultTask {
             for(RepoConfig repoConfig : pubConfig.getDockerRepos())
             {
                 String repoKey = repoConfig.key
-                String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//) + '/' + project.getName()
+                String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//).toLowerCase() + '/' + project.getName().toLowerCase()
                 List<String> tagVers = new ArrayList<>()
                 tags.add("$tagRoot:latest")
                 tags.add("$tagRoot:${project.getVersion()}")

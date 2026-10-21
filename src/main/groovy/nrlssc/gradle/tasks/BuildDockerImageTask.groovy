@@ -48,13 +48,13 @@ class BuildDockerImageTask extends DockerTask {
     }
 
 
-
     @TaskAction
     void run()    {
-
+        String dockerCmd = project.getProperties().getOrDefault("dockerCommand", "docker")
+        String extraBuildFlags = project.getProperties().getOrDefault("dockerBuildArgs", "")
         logger.info("Building docker images")
         String msg = "Successfully built docker image for " + project.getName() + " with tags:\n"
-        String cmd = "docker build "
+        String cmd = "$dockerCmd build $extraBuildFlags "
 
 
 
