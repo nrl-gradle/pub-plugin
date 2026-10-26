@@ -35,7 +35,7 @@ class PublishDockerImageTask extends DockerTask {
             for(RepoConfig repoConfig : pubConfig.getDockerRepos())
             {
                 String repoKey = repoConfig.key
-                String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//).toLowerCase() + '/' + project.getName() + ':'
+                String tagRoot = repoKey + '/' + project.group.toString().replaceAll(/\./, /\//).toLowerCase() + '/' + project.getName().toLowerCase() + ':'
                 List<String> tagVers = new ArrayList<>()
                 tagVers.add('latest')
                 tagVers.add(project.getVersion() + '')
